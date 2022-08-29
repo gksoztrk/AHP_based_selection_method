@@ -20,6 +20,7 @@ from collections import defaultdict
 #AHP Starts
 
 comparision_list=[1/9, 1/8, 1/7, 1/6, 1/5, 1/4, 1/3, 1/2, 1, 2, 3, 4, 5, 6, 7, 8, 9] #defined by Saaty (1987).
+RI = dict([(1, 0), (2, 0), (3, 0.58), (4, 0.90), (5, 1.12), (6, 1.24), (7, 1.32), (8, 1.41), (9, 1.45), (10, 1.49)]) #random index 
 
 def pairwise_criteria (no_criteria, comparision_list): #Creates the Pairwise Comparison Matrices (PCMs) randomly
         
@@ -92,7 +93,7 @@ of the number of solutions obtained by the multi-objective optimization.
 
 This function includes the rescaling method proposed.
 '''
-def options_matrix (final_frontier_crietria, comparision_list, final_frontier_crietria_all): 
+def pairwise_solutions (final_frontier_crietria, comparision_list, final_frontier_crietria_all): 
 
     differences_list=[]
     for sol in final_frontier_crietria:
@@ -182,18 +183,18 @@ def options_matrix (final_frontier_crietria, comparision_list, final_frontier_cr
     
  #after this step, the PCMs created for the objectives should be normised, and weighted. Finally, these weights and the preference weights should be used in the scores function below. 
 
-def scores (weights_equ, weights_comp, weights_cont, weights): #obtains the scores
+def scores (scores_equ, scores_comp, scores_cont, weights): #obtains the scores
         
         sco_lits=[]
-        sco_lits.append(weights_equ)
-        sco_lits.append(weights_comp)
-        sco_lits.append(weights_cont)
+        sco_lits.append(scores_equ)
+        sco_lits.append(scores_comp)
+        sco_lits.append(scores_cont)
 
         scores_matrix = np.hstack(sco_lits)
-        scores_matrix = np.reshape(scores_matrix, (len(weights), len(weights_comp)))
+        scores_matrix = np.reshape(scores_matrix, (len(weights), len(scores_cont)))
 
         scores=[]
-        for cols in range(len(weights_comp)):
+        for cols in range(len(scores_comp)):
             scor= np.matmul(scores_matrix[:, cols], weights)
             scores.append(scor)
         
